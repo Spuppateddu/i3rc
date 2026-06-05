@@ -1,0 +1,62 @@
+/* Compact power menu theme */
+
+* {
+    base:     #1e1e2e;
+    text:     #cdd6f4;
+    surface0: #313244;
+    lavender: #b4befe;
+    red:      #f38ba8;
+    font: "Cascadia Code NF 11";
+}
+
+window {
+    location:         center;
+    width:            260px;
+    border:           2px;
+    border-radius:    14px;
+    border-color:     @red;
+    background-color: @base;
+}
+
+mainbox {
+    padding:          14px;
+    spacing:          10px;
+    background-color: transparent;
+    children:         [ "inputbar", "listview" ];
+}
+
+inputbar {
+    padding:          8px 12px;
+    border-radius:    10px;
+    background-color: @surface0;
+    children:         [ "prompt" ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @red;
+}
+
+entry { enabled: false; }
+
+listview {
+    columns: 1; lines: 5; scrollbar: false; spacing: 4px;
+    background-color: transparent;
+}
+
+element {
+    padding:          8px 12px;
+    border-radius:    8px;
+    background-color: transparent;
+    text-color:       @text;
+    cursor:           pointer;
+}
+
+element selected.normal { background-color: @red; text-color: @base; }
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+}

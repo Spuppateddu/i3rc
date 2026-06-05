@@ -1,0 +1,187 @@
+# i3 config file (v4)
+#
+# Reference: https://i3wm.org/docs/userguide.html
+# This config is kept in ~/.i3rc/ and included from ~/.config/i3/config.
+
+# ── Modifier ──────────────────────────────────────────────────────────────
+set $mod Mod1
+
+# ── Fonts ─────────────────────────────────────────────────────────────────
+# Cascadia Code NF ships Nerd Font icon glyphs used by polybar/rofi/dunst.
+font pango:Cascadia Code NF 10
+
+# ── Autostart ─────────────────────────────────────────────────────────────
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id nm-applet
+exec --no-startup-id blueman-applet
+exec --no-startup-id pasystray
+exec_always --no-startup-id picom --config ~/.i3rc/picom/picom.conf
+exec_always --no-startup-id dunst -config ~/.i3rc/dunst/dunstrc
+exec_always --no-startup-id ~/.i3rc/scripts/wallpaper_cycle.sh
+exec_always --no-startup-id ~/.i3rc/scripts/launch_polybar.sh
+exec --no-startup-id mpDris2
+
+# Keyboard: fast repeat + Caps→Ctrl, reapplied when a keyboard is (re)attached.
+exec_always --no-startup-id xset r rate 200 50
+exec_always --no-startup-id setxkbmap -option ctrl:nocaps
+exec_always --no-startup-id sh -c 'udevadm monitor --udev --subsystem-match=input | grep --line-buffered "add" | while read -r line; do xset r rate 200 50; setxkbmap -option ctrl:nocaps; done'
+
+# Prevent screen blanking / DPMS.
+exec_always --no-startup-id xset s off
+exec_always --no-startup-id xset -dpms
+exec_always --no-startup-id xset s noblank
+
+# ── Audio keys (PipeWire via wpctl) ───────────────────────────────────────
+# polybar's internal/pulseaudio module auto-refreshes on PipeWire events,
+# so no manual signal is needed. (Sending an unhandled RT signal killed polybar.)
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute        exec --no-startup-id wpctl set-mute   @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute     exec --no-startup-id wpctl set-mute   @DEFAULT_AUDIO_SOURCE@ toggle
+
+# Brightness keys (if supported).
+bindsym XF86MonBrightnessUp   exec --no-startup-id brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+# Media keys.
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+# ── Vim-style directions ──────────────────────────────────────────────────
+set $up    k
+set $down  j
+set $left  h
+set $right l
+
+floating_modifier $mod
+tiling_drag modifier titlebar
+
+# ── Core bindings ─────────────────────────────────────────────────────────
+bindsym $mod+Return exec alacritty
+bindsym $mod+q kill
+
+# App launcher (rofi drun) and window switcher.
+bindsym $mod+d   exec --no-startup-id rofi -show drun -config ~/.i3rc/rofi/config.rasi
+bindsym $mod+Tab exec --no-startup-id rofi -show window -config ~/.i3rc/rofi/config.rasi
+
+# Toggle terminal (Alacritty) light/dark colour scheme.
+bindsym $mod+Shift+t exec --no-startup-id ~/.i3rc/scripts/theme.sh toggle
+
+# Screenshot.
+bindsym $mod+Shift+s exec --no-startup-id flameshot gui
+bindsym Control+Shift+4 exec --no-startup-id flameshot gui
+bindsym Control+Shift+dollar exec --no-startup-id flameshot gui
+
+# Lock & power menu.
+bindsym $mod+Shift+x exec --no-startup-id i3lock
+bindsym $mod+Shift+p exec --no-startup-id ~/.i3rc/scripts/powermenu.sh
+
+# Music: full TUI, and a quick rofi folder picker that enqueues + shuffles.
+bindsym $mod+m        exec --no-startup-id alacritty -e ncmpcpp
+bindsym $mod+Shift+m  exec --no-startup-id ~/.i3rc/scripts/play_folder.sh
+
+# ── Focus ─────────────────────────────────────────────────────────────────
+bindsym $mod+$left  focus left
+bindsym $mod+$down  focus down
+bindsym $mod+$up    focus up
+bindsym $mod+$right focus right
+bindsym $mod+Left   focus left
+bindsym $mod+Down   focus down
+bindsym $mod+Up     focus up
+bindsym $mod+Right  focus right
+
+# ── Move ──────────────────────────────────────────────────────────────────
+bindsym $mod+Shift+$left  move left
+bindsym $mod+Shift+$down  move down
+bindsym $mod+Shift+$up    move up
+bindsym $mod+Shift+$right move right
+bindsym $mod+Shift+Left   move left
+bindsym $mod+Shift+Down   move down
+bindsym $mod+Shift+Up     move up
+bindsym $mod+Shift+Right  move right
+
+# ── Split / layout ────────────────────────────────────────────────────────
+bindsym $mod+b split h
+bindsym $mod+v split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+# ── Scratchpad ────────────────────────────────────────────────────────────
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus       scratchpad show
+
+# ── Workspaces ────────────────────────────────────────────────────────────
+bindsym $mod+Control+Right workspace next
+bindsym $mod+Control+Left  workspace prev
+
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+# ── Session ───────────────────────────────────────────────────────────────
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Exit i3? This ends your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# ── Resize mode ───────────────────────────────────────────────────────────
+mode "resize" {
+    bindsym $left  resize shrink width 10 px or 10 ppt
+    bindsym $down  resize grow   height 10 px or 10 ppt
+    bindsym $up    resize shrink height 10 px or 10 ppt
+    bindsym $right resize grow   width 10 px or 10 ppt
+
+    bindsym Left  resize shrink width 10 px or 10 ppt
+    bindsym Down  resize grow   height 10 px or 10 ppt
+    bindsym Up    resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow   width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# ── Look: gaps, borders, colors (Catppuccin Mocha) ────────────────────────
+for_window [class=".*"] border pixel 2
+default_border        pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+
+gaps inner 8
+gaps outer 2
+smart_gaps on
+
+# class                 border    backgr.   text      indicator child_border
+client.focused          #b4befe   #b4befe   #1e1e2e   #cba6f7   #b4befe
+client.focused_inactive #313244   #313244   #a6adc8   #45475a   #313244
+client.unfocused        #1e1e2e   #1e1e2e   #a6adc8   #45475a   #1e1e2e
+client.urgent           #f38ba8   #f38ba8   #1e1e2e   #f38ba8   #f38ba8
+client.placeholder      #1e1e2e   #1e1e2e   #cdd6f4   #1e1e2e   #1e1e2e
+client.background       #1e1e2e
+
+# ── No built-in i3bar — polybar is launched by launch_polybar.sh ─────────

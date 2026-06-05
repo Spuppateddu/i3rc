@@ -1,0 +1,112 @@
+/* Catppuccin Mocha launcher theme */
+
+* {
+    base:     #1e1e2e;
+    mantle:   #181825;
+    crust:    #11111b;
+    surface0: #313244;
+    surface1: #45475a;
+    text:     #cdd6f4;
+    subtext:  #a6adc8;
+    blue:     #89b4fa;
+    lavender: #b4befe;
+    mauve:    #cba6f7;
+    red:      #f38ba8;
+    transparent: #00000000;
+
+    font: "Cascadia Code NF 11";
+}
+
+window {
+    transparency:     "real";
+    location:         center;
+    anchor:           center;
+    fullscreen:       false;
+    width:            640px;
+    x-offset:         0;
+    y-offset:         0;
+    enabled:          true;
+    margin:           0;
+    padding:          0;
+    border:           2px;
+    border-radius:    14px;
+    border-color:     @lavender;
+    background-color: @base;
+    cursor:           "default";
+}
+
+mainbox {
+    enabled:          true;
+    spacing:          12px;
+    margin:           0;
+    padding:          18px;
+    background-color: transparent;
+    children:         [ "inputbar", "listview" ];
+}
+
+inputbar {
+    enabled:          true;
+    spacing:          10px;
+    padding:          10px 14px;
+    border-radius:    10px;
+    background-color: @surface0;
+    text-color:       @text;
+    children:         [ "prompt", "entry" ];
+}
+
+prompt {
+    enabled:          true;
+    background-color: transparent;
+    text-color:       @lavender;
+}
+
+entry {
+    enabled:          true;
+    background-color: transparent;
+    text-color:       @text;
+    cursor:           text;
+    placeholder:      "Search apps…";
+    placeholder-color: @subtext;
+}
+
+listview {
+    enabled:          true;
+    columns:          1;
+    lines:            8;
+    cycle:            true;
+    dynamic:          true;
+    scrollbar:        false;
+    spacing:          4px;
+    background-color: transparent;
+    text-color:       @text;
+    cursor:           "default";
+}
+
+element {
+    enabled:          true;
+    spacing:          10px;
+    padding:          8px 12px;
+    border-radius:    8px;
+    background-color: transparent;
+    text-color:       @text;
+    cursor:           pointer;
+}
+
+element normal.normal    { background-color: transparent; text-color: @text; }
+element alternate.normal { background-color: transparent; text-color: @text; }
+element selected.normal  { background-color: @lavender;   text-color: @base; }
+element selected.active  { background-color: @mauve;      text-color: @base; }
+element selected.urgent  { background-color: @red;        text-color: @base; }
+
+element-icon {
+    size:             1.1em;
+    background-color: transparent;
+    text-color:       inherit;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+    horizontal-align: 0.0;
+}
