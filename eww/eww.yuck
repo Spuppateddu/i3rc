@@ -53,7 +53,8 @@
 
 ;; ── Status island ────────────────────────────────────────────────────────────
 (defwidget netseg []
-  (button :class "seg" :onclick "nm-connection-editor &"
+  (button :class "seg" :onclick "$HOME/.i3rc/scripts/network_menu.sh &"
+          :onrightclick "nm-connection-editor &"
     (box :space-evenly false :spacing 6
       (label :class {net.kind == "off" ? "icon red" : "icon blue"}
              :text {net.kind == "wifi" ? "󰖩" : net.kind == "eth" ? "󰈀" : "󰖪"})

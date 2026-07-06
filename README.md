@@ -34,6 +34,7 @@ notifications, and mpd + ncmpcpp for offline music.
     ├── wallpaper_cycle.sh     # random wallpaper every 10 min
     ├── powermenu.sh           # rofi lock/suspend/reboot/shutdown
     ├── bluetooth_menu.sh      # rofi adapter toggle + device connect
+    ├── network_menu.sh        # rofi wifi scan/connect + VPN up/down
     ├── player_ctl.sh          # MPRIS music control (mpd priority)
     └── play_folder.sh         # rofi-picked folder → mpd shuffle play
 ```
