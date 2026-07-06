@@ -1,7 +1,8 @@
 # Install guide — i3 rice
 
 Full setup for this i3 configuration on a fresh Ubuntu (tested on 25.10). At
-the end you get: i3 with gaps + Catppuccin colors, a polybar top bar, rofi
+the end you get: i3 with gaps + Catppuccin colors, an eww top bar (floating
+islands, built from source), rofi
 launcher, random wallpaper cycling, picom compositing, dunst notifications,
 and mpd + ncmpcpp for music with controls in the top bar.
 
@@ -14,8 +15,8 @@ cd ~/.i3rc
 ```
 
 The script is idempotent: it checks what's already installed and only does
-the missing work (apt packages, Cascadia Code Nerd Font download, config
-symlinks, mpd user services). Re-run it anytime. `./setup.sh --dry-run`
+the missing work (apt packages, CaskaydiaCove Nerd Font download, eww build
+from source, config symlinks, mpd user services). Re-run it anytime. `./setup.sh --dry-run`
 shows what would change without touching anything.
 
 The sections below explain each step manually if you want to do it by hand
@@ -40,27 +41,36 @@ printf 'include "~/.i3rc/config"\n' > ~/.config/i3/config
 sudo apt update
 sudo apt install -y \
     i3 i3lock \
-    polybar rofi \
+    rofi \
+    git build-essential pkg-config \
+    libgtk-3-dev libdbusmenu-gtk3-dev \
+    jq \
     picom feh \
     dunst libnotify-bin \
-    fonts-font-awesome \
     flameshot \
     alacritty \
-    nm-applet network-manager-gnome blueman pasystray \
+    network-manager-gnome blueman \
     pavucontrol brightnessctl playerctl pulseaudio-utils \
     mpd mpc ncmpcpp mpdris2 \
     dex xss-lock \
     papirus-icon-theme
 ```
 
-> Everything is in the default Ubuntu repos on 25.10. If `polybar` isn't
-> available on older Ubuntu releases, build from source (see
-> <https://github.com/polybar/polybar>).
+> The top bar is [eww](https://github.com/elkowar/eww), which is not packaged
+> for Ubuntu — `setup.sh` installs a user-local Rust toolchain and builds it:
+>
+> ```bash
+> curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+> git clone --depth 1 https://github.com/elkowar/eww ~/.local/src/eww
+> cd ~/.local/src/eww && cargo build --release --no-default-features --features x11
+> mkdir -p ~/.local/bin && cp target/release/eww ~/.local/bin/eww
+> ```
 
-## 3. Fonts — Cascadia Code Nerd Font
+## 3. Fonts — CaskaydiaCove Nerd Font
 
-Polybar/rofi/dunst expect `Cascadia Code NF` (the Nerd Font variant shipping
-icon glyphs). Install into your user fonts directory:
+eww/rofi/dunst expect `CaskaydiaCove Nerd Font` (the Nerd Fonts build of
+Cascadia Code — Microsoft's own "Cascadia Code NF" lacks the Material Design
+icon range used by the bar). Install into your user fonts directory:
 
 ```bash
 mkdir -p ~/.local/share/fonts
@@ -73,7 +83,7 @@ fc-cache -fv
 Verify:
 
 ```bash
-fc-list | grep -i "Cascadia Code NF"
+fc-list | grep -i "CaskaydiaCove Nerd"
 ```
 
 ## 4. Link the per-tool configs into `~/.config`
@@ -82,8 +92,7 @@ This keeps all files tracked in `~/.i3rc` and each tool finds them in its
 default location:
 
 ```bash
-mkdir -p ~/.config/{polybar,rofi,picom,dunst,mpd,ncmpcpp}
-ln -sf ~/.i3rc/polybar/config.ini   ~/.config/polybar/config.ini
+mkdir -p ~/.config/{rofi,picom,dunst,mpd,ncmpcpp}
 ln -sf ~/.i3rc/rofi/config.rasi     ~/.config/rofi/config.rasi
 ln -sf ~/.i3rc/picom/picom.conf     ~/.config/picom/picom.conf
 ln -sf ~/.i3rc/dunst/dunstrc        ~/.config/dunst/dunstrc
@@ -91,7 +100,7 @@ ln -sf ~/.i3rc/mpd/mpd.conf         ~/.config/mpd/mpd.conf
 ln -sf ~/.i3rc/ncmpcpp/config       ~/.config/ncmpcpp/config
 ```
 
-The i3 config already references the in-repo paths directly for polybar,
+The i3 config already references the in-repo paths directly for eww,
 rofi, picom, and dunst, so the symlinks above are optional for those — they
 only help if you later run the tools standalone (e.g. `rofi -show drun`
 without passing `-config`). For mpd + ncmpcpp the symlinks **are** required,
@@ -133,7 +142,7 @@ Controls:
 | Open full TUI (random/queue/volume/etc.) | `$mod+m` (or right-click music widget) |
 | Rofi folder picker → queue + shuffle + play | `$mod+Shift+m` |
 | Play / pause | Click the ▶ icon in the top bar |
-| Prev / next | Click ⏮ / ⏭ in top bar, or scroll on track name |
+| Prev / next | Click ⏮ / ⏭ in top bar |
 | Media keys | XF86AudioPlay / Next / Prev (if your keyboard has them) |
 
 Inside ncmpcpp the useful keys are: `z` = random, `r` = repeat, `c` = clear
@@ -148,9 +157,9 @@ in i3: `$mod+Shift+r` to restart.
 If the top bar doesn't appear:
 
 ```bash
-~/.i3rc/scripts/launch_polybar.sh
-tail -f /tmp/polybar_main.log   # only if the script was modified to log
-polybar --list-monitors
+~/.i3rc/scripts/launch_eww.sh
+~/.local/bin/eww --config ~/.i3rc/eww logs            # live config/script errors
+~/.local/bin/eww --config ~/.i3rc/eww active-windows  # should list "bar-<output>"
 ```
 
 ## 8. Keybindings cheat sheet
@@ -181,11 +190,12 @@ polybar --list-monitors
 ## 9. Customizing
 
 - **Colors** — search `#1e1e2e` / `#b4befe` etc. The palette is Catppuccin
-  Mocha; swap values consistently across `polybar/config.ini`,
+  Mocha; swap values consistently across `eww/eww.scss`,
   `rofi/launcher.rasi`, `dunst/dunstrc`, and the `client.*` lines in
   `config`.
-- **Bar modules** — edit `modules-left/center/right` in
-  `polybar/config.ini`.
+- **Bar widgets/layout** — edit `eww/eww.yuck` (widgets, islands) and
+  `eww/eww.scss` (style); changes apply live with
+  `~/.local/bin/eww --config ~/.i3rc/eww reload`.
 - **Gaps** — `gaps inner`/`gaps outer` in `config`.
 - **Wallpaper interval** — `INTERVAL` env var or edit the default in
   `scripts/wallpaper_cycle.sh`.
@@ -198,4 +208,5 @@ rm ~/.config/i3/config
 ```
 
 Everything else is self-contained in `~/.i3rc` + the symlinks in
-`~/.config/{polybar,rofi,picom,dunst,mpd,ncmpcpp}`.
+`~/.config/{rofi,picom,dunst,mpd,ncmpcpp}` (plus `~/.local/bin/eww` and
+`~/.local/src/eww`).

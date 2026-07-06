@@ -1,0 +1,105 @@
+// Catppuccin Mocha
+$base:     #1e1e2e;
+$mantle:   #181825;
+$surface0: #313244;
+$surface1: #45475a;
+$text:     #cdd6f4;
+$subtext:  #a6adc8;
+$blue:     #89b4fa;
+$lavender: #b4befe;
+$mauve:    #cba6f7;
+$green:    #a6e3a1;
+$red:      #f38ba8;
+$yellow:   #f9e2af;
+$peach:    #fab387;
+
+* {
+  all: unset;
+  font-family: "CaskaydiaCove Nerd Font";
+  font-size: 13px;
+}
+
+window { background: transparent; }
+
+.bar { background: transparent; padding: 4px 6px; }
+
+.island {
+  background: rgba(30, 30, 46, 0.94);
+  border: 1px solid rgba(69, 71, 90, 0.55);
+  border-radius: 14px;
+  padding: 3px 12px;
+  margin: 0 4px;
+  color: $text;
+}
+
+// workspaces on the other (bar-less) monitor
+.island.detached {
+  background: rgba(24, 24, 37, 0.82);
+  border: 1px dashed rgba(166, 173, 200, 0.45);
+}
+
+// workspaces
+.ws {
+  padding: 0 9px;
+  border-radius: 9px;
+  color: $subtext;
+  transition: all 150ms ease;
+}
+.ws:hover   { background: $surface0; color: $text; }
+.ws.focused { background: $lavender; color: $base; }
+.ws.visible { background: $surface1; color: $text; }
+.ws.urgent  { background: $red; color: $base; }
+
+// music
+.pbtn {
+  padding: 0 5px;
+  border-radius: 8px;
+  color: $subtext;
+  font-size: 15px;
+  transition: all 150ms ease;
+}
+.pbtn:hover  { background: $surface0; color: $text; }
+.pbtn.accent { color: $mauve; font-size: 17px; }
+.pbtn.on     { color: $green; }
+.pbtn.track  { color: $peach; }
+.pbtn.stop   { color: $red; }
+.ptitle      { color: $text; padding: 0 6px; }
+.ptitle:hover { color: $lavender; }
+
+// status segments
+.seg {
+  padding: 1px 7px;
+  border-radius: 9px;
+  transition: all 150ms ease;
+}
+.seg:hover { background: $surface0; }
+
+.icon { font-size: 15px; margin-right: 3px; }
+.blue     { color: $blue; }
+.green    { color: $green; }
+.red      { color: $red; }
+.peach    { color: $peach; }
+.yellow   { color: $yellow; }
+.lavender { color: $lavender; }
+.dim      { color: $subtext; }
+
+.power { padding: 1px 9px; }
+
+// calendar popup
+.calbox {
+  background: $base;
+  border: 2px solid $lavender;
+  border-radius: 14px;
+  padding: 10px;
+}
+.cal {
+  color: $text;
+  padding: 4px;
+
+  &:selected { color: $base; background: $lavender; border-radius: 6px; }
+  &:indeterminate { color: $surface1; }
+  &.header { color: $lavender; font-weight: bold; }
+  &.button { color: $subtext; }
+  &.button:hover { color: $text; }
+  &.highlight { color: $mauve; font-weight: bold; }
+}

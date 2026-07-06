@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Simple rofi-based power menu.
 
-chosen=$(printf " Lock\n Suspend\n Logout\n Reboot\n Shutdown" | \
-    rofi -dmenu -i -p "Power" -theme "$HOME/.i3rc/rofi/powermenu.rasi")
+chosen=$(printf '\U000F033E Lock\n\U000F04B2 Suspend\n\U000F0343 Logout\n\U000F0709 Reboot\n\U000F0425 Shutdown' | \
+    rofi -dmenu -i -no-show-icons -p "Power" -theme "$HOME/.i3rc/rofi/powermenu.rasi")
 
 case "$chosen" in
     *Lock)      i3lock ;;

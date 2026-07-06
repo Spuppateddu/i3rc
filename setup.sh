@@ -49,13 +49,14 @@ step "Checking apt packages"
 
 PACKAGES=(
     i3 i3lock
-    polybar rofi
+    rofi
     qalc
-    git build-essential
+    git build-essential pkg-config
+    libgtk-3-dev libdbusmenu-gtk3-dev
+    jq
     picom feh
     dunst libnotify-bin
-    fonts-font-awesome
-    network-manager-gnome blueman pasystray
+    network-manager-gnome blueman
     pavucontrol brightnessctl playerctl pulseaudio-utils
     wireplumber
     mpd mpc ncmpcpp mpdris2
@@ -100,8 +101,8 @@ fi
 # ── 2. Cascadia Code Nerd Font ────────────────────────────────────────────
 step "Checking Cascadia Code Nerd Font"
 
-if fc-list 2>/dev/null | grep -iE "cascadia code nf|caskaydia.*nerd" >/dev/null; then
-    skip "Cascadia Code Nerd Font already installed."
+if fc-list 2>/dev/null | grep -iE "caskaydiacove.*nerd" >/dev/null; then
+    skip "CaskaydiaCove Nerd Font already installed."
 else
     url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip"
     tmp="/tmp/CascadiaCode.$$.zip"
@@ -112,7 +113,38 @@ else
     run unzip -oq "$tmp" -d "$dest"
     run rm -f "$tmp"
     run fc-cache -f
-    ok "Cascadia Code NF installed."
+    ok "CaskaydiaCove Nerd Font installed."
+fi
+
+# ── 2.2. eww bar (built from source — not packaged for Ubuntu) ────────────
+step "Checking eww"
+
+EWW_BIN="$HOME/.local/bin/eww"
+if [[ -x "$EWW_BIN" ]]; then
+    skip "eww already installed."
+else
+    if ! command -v cargo >/dev/null 2>&1 && [[ ! -x "$HOME/.cargo/bin/cargo" ]]; then
+        step "Installing Rust toolchain (rustup, user-local)"
+        run bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable'
+    fi
+    # shellcheck disable=SC1091
+    source "$HOME/.cargo/env" 2>/dev/null || true
+    EWW_SRC="$HOME/.local/src/eww"
+    if [[ ! -d "$EWW_SRC" ]]; then
+        step "Cloning eww"
+        run git clone --depth 1 https://github.com/elkowar/eww.git "$EWW_SRC"
+    fi
+    step "Building eww (release, X11 only) — takes a few minutes"
+    run bash -c "cd '$EWW_SRC' && cargo build --release --no-default-features --features x11"
+    run mkdir -p "$HOME/.local/bin"
+    run cp "$EWW_SRC/target/release/eww" "$EWW_BIN"
+    ok "eww installed to $EWW_BIN."
+fi
+
+# Bluetooth lives in the bar (rofi menu) — keep blueman from adding a tray icon.
+if command -v gsettings >/dev/null 2>&1; then
+    run gsettings set org.blueman.general plugin-list "['!StatusIcon']" || \
+        warn "Could not disable blueman tray icon."
 fi
 
 # ── 2.5. BreezeX-Dark cursor theme ────────────────────────────────────────
@@ -234,7 +266,6 @@ link() {
     ok "linked $dst"
 }
 
-link "$REPO/polybar/config.ini"   "$HOME/.config/polybar/config.ini"
 link "$REPO/rofi/config.rasi"     "$HOME/.config/rofi/config.rasi"
 link "$REPO/rofi/launcher.rasi"   "$HOME/.config/rofi/launcher.rasi"
 link "$REPO/rofi/powermenu.rasi"  "$HOME/.config/rofi/powermenu.rasi"
@@ -276,7 +307,7 @@ if command -v systemctl >/dev/null 2>&1; then
             break
         fi
     done
-    $enabled_any || warn "mpdris2 service unit not found — polybar music titles may not appear."
+    $enabled_any || warn "mpdris2 service unit not found — bar music titles may not appear."
 else
     warn "systemctl not available — start mpd and mpdris2 manually."
 fi

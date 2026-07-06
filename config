@@ -4,22 +4,22 @@
 # This config is kept in ~/.i3rc/ and included from ~/.config/i3/config.
 
 # ── Modifier ──────────────────────────────────────────────────────────────
+# Window key
+#set $mod Mod4
+# Alt key
 set $mod Mod1
 
 # ── Fonts ─────────────────────────────────────────────────────────────────
-# Cascadia Code NF ships Nerd Font icon glyphs used by polybar/rofi/dunst.
-font pango:Cascadia Code NF 10
+# CaskaydiaCove Nerd Font ships the Material Design glyphs used by eww/rofi/dunst.
+font pango:CaskaydiaCove Nerd Font 10
 
 # ── Autostart ─────────────────────────────────────────────────────────────
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-exec --no-startup-id nm-applet
-exec --no-startup-id blueman-applet
-exec --no-startup-id pasystray
 exec_always --no-startup-id picom --config ~/.i3rc/picom/picom.conf
 exec_always --no-startup-id dunst -config ~/.i3rc/dunst/dunstrc
 exec_always --no-startup-id ~/.i3rc/scripts/wallpaper_cycle.sh
-exec_always --no-startup-id ~/.i3rc/scripts/launch_polybar.sh
+exec_always --no-startup-id ~/.i3rc/scripts/launch_eww.sh
 exec --no-startup-id mpDris2
 
 # Keyboard: fast repeat + Caps→Ctrl, reapplied when a keyboard is (re)attached.
@@ -33,8 +33,7 @@ exec_always --no-startup-id xset -dpms
 exec_always --no-startup-id xset s noblank
 
 # ── Audio keys (PipeWire via wpctl) ───────────────────────────────────────
-# polybar's internal/pulseaudio module auto-refreshes on PipeWire events,
-# so no manual signal is needed. (Sending an unhandled RT signal killed polybar.)
+# The eww volume widget listens on `pactl subscribe`, so no manual signal is needed.
 bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
 bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym XF86AudioMute        exec --no-startup-id wpctl set-mute   @DEFAULT_AUDIO_SINK@ toggle
@@ -184,4 +183,4 @@ client.urgent           #f38ba8   #f38ba8   #1e1e2e   #f38ba8   #f38ba8
 client.placeholder      #1e1e2e   #1e1e2e   #cdd6f4   #1e1e2e   #1e1e2e
 client.background       #1e1e2e
 
-# ── No built-in i3bar — polybar is launched by launch_polybar.sh ─────────
+# ── No built-in i3bar — the eww bar is launched by launch_eww.sh ─────────

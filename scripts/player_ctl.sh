@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Polybar music widget — local MPD takes priority over other MPRIS players.
+# Music control helper (used by the eww bar) — local MPD takes priority over other MPRIS players.
 #
 # Priority when picking the "active" player for title + transport buttons:
 #   1. mpd if it is Playing.
@@ -10,49 +10,16 @@
 # renders a red stop glyph whose click stops mpd (which hands priority
 # back to the browser / other media).
 
-# FontAwesome glyphs (via Cascadia Code NF). Kept as ANSI-C escapes so the
+# Material Design glyphs (via CaskaydiaCove Nerd Font). Kept as ANSI-C escapes so the
 # source stays pure ASCII — the Write tool strips literal PUA glyphs.
-G_PLAY=$''
-G_PAUSE=$''
-G_STOP=$''
-G_FOLDER=$''
-G_SHUFFLE=$''
-G_LOOP=$''
+G_PLAY=$'\U000F040A'
+G_PAUSE=$'\U000F03E4'
+G_STOP=$'\U000F04DB'
+G_FOLDER=$'\U000F1359'
+G_SHUFFLE=$'\U000F049D'
+G_LOOP=$'\U000F0456'
 
-target_player() {
-    local mpd_s other p s
-    mpd_s=$(playerctl -p mpd status 2>/dev/null)
-    if [ "$mpd_s" = "Playing" ]; then
-        printf 'mpd\n'
-        return
-    fi
-    other=""
-    while IFS= read -r p; do
-        [ -z "$p" ] && continue
-        [ "$p" = "mpd" ] && continue
-        s=$(playerctl -p "$p" status 2>/dev/null)
-        if [ "$s" = "Playing" ]; then
-            printf '%s\n' "$p"
-            return
-        fi
-        [ -z "$other" ] && [ "$s" = "Paused" ] && other="$p"
-    done < <(playerctl -l 2>/dev/null)
-    if [ "$mpd_s" = "Paused" ]; then
-        printf 'mpd\n'
-        return
-    fi
-    [ -n "$other" ] && printf '%s\n' "$other"
-}
-
-pctl() {
-    local p
-    p=$(target_player)
-    if [ -n "$p" ]; then
-        playerctl -p "$p" "$@"
-    else
-        playerctl --ignore-player=mpd "$@" 2>/dev/null
-    fi
-}
+source "$HOME/.i3rc/scripts/player_lib.sh"
 
 case "$1" in
     toggle) pctl play-pause ;;
@@ -97,12 +64,12 @@ case "$1" in
         body=""
         [ -n "$artist" ] && body="$artist"
         [ -n "$album" ] && body="${body:+$body — }$album"
-        notify-send -a "polybar-player" -r 90910 -t 5000 \
+        notify-send -a "player" -r 90910 -t 5000 \
             "${title:-(no title)}" "$body"
         ;;
     shuffle-toggle)
         pctl shuffle Toggle 2>/dev/null
-        notify-send -a "polybar-player" -r 90911 -t 1500 \
+        notify-send -a "player" -r 90911 -t 1500 \
             "Shuffle: $(pctl shuffle 2>/dev/null)"
         ;;
     loop-cycle)
@@ -113,7 +80,7 @@ case "$1" in
             *)        next=None ;;
         esac
         pctl loop "$next" 2>/dev/null
-        notify-send -a "polybar-player" -r 90912 -t 1500 "Repeat: $next"
+        notify-send -a "player" -r 90912 -t 1500 "Repeat: $next"
         ;;
     shuffle-icon)
         case "$(pctl shuffle 2>/dev/null)" in

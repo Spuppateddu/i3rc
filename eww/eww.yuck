@@ -1,0 +1,137 @@
+;; eww bar. Click/menu actions reuse ~/.i3rc/scripts/*.
+;; Icon glyphs are Material Design (CaskaydiaCove Nerd Font).
+
+;; ── Data sources ─────────────────────────────────────────────────────────────
+(deflisten wsmap :initial "{}" "$HOME/.i3rc/eww/scripts/workspaces.sh")
+(deflisten player :initial '{"status":"none","title":"","artist":"","shuffle":"","loop":"","mpd_playing":false}'
+  "$HOME/.i3rc/eww/scripts/player.sh")
+(deflisten net :initial '{"kind":"off","label":"offline","down":"0B","up":"0B"}'
+  "$HOME/.i3rc/eww/scripts/network.sh")
+(deflisten vol :initial '{"level":0,"muted":false}'
+  "$HOME/.i3rc/eww/scripts/volume.sh")
+
+;; ── Workspaces ───────────────────────────────────────────────────────────────
+(defwidget wsbtn [ws]
+  (button :class {ws.focused ? "ws focused" :
+                  ws.urgent  ? "ws urgent"  :
+                  ws.visible ? "ws visible" : "ws"}
+          :onclick "i3-msg 'workspace number ${ws.num}' >/dev/null"
+    "${ws.label}"))
+
+(defwidget workspaces [out]
+  (box :class "island" :space-evenly false :spacing 3
+    (for ws in {wsmap[out] ?: []}
+      (wsbtn :ws ws))))
+
+;; Workspaces living on other outputs — separate detached card.
+(defwidget workspaces_other [out]
+  (box :class "island detached" :space-evenly false :spacing 3
+       :visible {arraylength(jq(wsmap, "[to_entries[] | select(.key != \"${out}\") | .value[]]")) > 0}
+    (for ws in {jq(wsmap, "[to_entries[] | select(.key != \"${out}\") | .value[]]")}
+      (wsbtn :ws ws))))
+
+;; ── Music island ─────────────────────────────────────────────────────────────
+(defwidget player_island []
+  (box :class "island player" :space-evenly false :spacing 6
+    (revealer :reveal {player.status != "none"} :transition "slideright" :duration "300ms"
+      (box :space-evenly false :spacing 6
+        (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh prev" "󰒮")
+        (button :class "pbtn accent" :onclick "$HOME/.i3rc/scripts/player_ctl.sh toggle"
+          {player.status == "Playing" ? "󰏤" : "󰐊"})
+        (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh next" "󰒭")
+        (button :class "ptitle" :onclick "$HOME/.i3rc/scripts/player_ctl.sh show-title"
+          (label :limit-width 45
+                 :text {player.artist != "" ? "${player.title} — ${player.artist}" : player.title}))
+        (button :class {player.shuffle == "On" ? "pbtn on" : "pbtn"}
+                :onclick "$HOME/.i3rc/scripts/player_ctl.sh shuffle-toggle" "󰒝")
+        (button :class {player.loop == "Playlist" ? "pbtn on" :
+                        player.loop == "Track"    ? "pbtn track" : "pbtn"}
+                :onclick "$HOME/.i3rc/scripts/player_ctl.sh loop-cycle" "󰑖")))
+    (button :class {player.mpd_playing ? "pbtn stop" : "pbtn on"}
+            :onclick "$HOME/.i3rc/scripts/player_ctl.sh folder-click"
+      {player.mpd_playing ? "󰓛" : "󱍙"})))
+
+;; ── Status island ────────────────────────────────────────────────────────────
+(defwidget netseg []
+  (button :class "seg" :onclick "nm-connection-editor &"
+    (box :space-evenly false :spacing 6
+      (label :class {net.kind == "off" ? "icon red" : "icon blue"}
+             :text {net.kind == "wifi" ? "󰖩" : net.kind == "eth" ? "󰈀" : "󰖪"})
+      (label :text {net.kind == "off" ? "offline" : net.label})
+      (label :class "green" :visible {net.kind != "off"} :text "↓${net.down}")
+      (label :class "red" :visible {net.kind != "off"} :text "↑${net.up}"))))
+
+(defwidget volseg []
+  (eventbox :onscroll "$HOME/.i3rc/eww/scripts/volume.sh scroll {}"
+    (button :class "seg" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+            :onrightclick "pavucontrol &"
+      (box :space-evenly false :spacing 6
+        (label :class {vol.muted ? "icon red" : "icon green"}
+               :text {vol.muted ? "󰝟" :
+                      vol.level < 34 ? "󰕿" :
+                      vol.level < 67 ? "󰖀" : "󰕾"})
+        (label :text {vol.muted ? "muted" : "${vol.level}%"})))))
+
+(defwidget sysinfo []
+  (box :space-evenly false :spacing 12
+    (box :space-evenly false :spacing 6
+      (label :class "icon peach" :text "󰻠")
+      (label :text "CPU ${round(EWW_CPU.avg, 1)}%"))
+    (box :space-evenly false :spacing 6
+      (label :class "icon yellow" :text "󰍛")
+      (label :text "RAM ${round(EWW_RAM.used_mem / 1073741824, 1)}/${round(EWW_RAM.total_mem / 1073741824, 1)}G"))))
+
+(defwidget batteryseg []
+  (box :visible {EWW_BATTERY != ""} :space-evenly false :spacing 6
+    (label :class {EWW_BATTERY.BAT0.status == "Charging" || EWW_BATTERY.BAT0.status == "Full" ? "icon green" :
+                   EWW_BATTERY.BAT0.capacity <= 20 ? "icon red" :
+                   EWW_BATTERY.BAT0.capacity <= 40 ? "icon peach" :
+                   EWW_BATTERY.BAT0.capacity <= 60 ? "icon yellow" : "icon green"}
+           :text {EWW_BATTERY.BAT0.status == "Charging" || EWW_BATTERY.BAT0.status == "Full" ? "󰂄" :
+                  EWW_BATTERY.BAT0.capacity <= 20 ? "󰁺" :
+                  EWW_BATTERY.BAT0.capacity <= 40 ? "󰁼" :
+                  EWW_BATTERY.BAT0.capacity <= 60 ? "󰁾" :
+                  EWW_BATTERY.BAT0.capacity <= 80 ? "󰂀" : "󰁹"})
+    (label :text "${EWW_BATTERY.BAT0.capacity}%")))
+
+(defwidget clockseg []
+  (button :class "seg" :onclick "$HOME/.local/bin/eww --config $HOME/.i3rc/eww open --toggle calendar"
+    (box :space-evenly false :spacing 6
+      (label :class "icon lavender" :text "󰃭")
+      (label :text {formattime(EWW_TIME, "%a %d %b")})
+      (label :class "icon lavender" :text "󰥔")
+      (label :text {formattime(EWW_TIME, "%H:%M")}))))
+
+(defwidget status_island [tray]
+  (box :class "island status" :space-evenly false :spacing 12
+    (netseg)
+    (volseg)
+    (sysinfo)
+    (batteryseg)
+    (clockseg)
+    (revealer :reveal {tray == "true"} :transition "none"
+      (systray :spacing 6 :icon-size 18 :prepend-new true))
+    (button :class "seg power" :onclick "$HOME/.i3rc/scripts/powermenu.sh &"
+      (label :class "icon red" :text "󰐥"))))
+
+;; ── Bar ──────────────────────────────────────────────────────────────────────
+(defwidget bar [out tray]
+  (centerbox :class "bar"
+    (box :halign "start" :space-evenly false (workspaces :out out) (workspaces_other :out out))
+    (box :halign "center" :space-evenly false (player_island))
+    (box :halign "end" :space-evenly false (status_island :tray tray))))
+
+;; Opened per output: eww open bar --screen <name> --id bar-<name> --arg out=<name> --arg tray=true|false
+(defwindow bar [out tray]
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%" :y "0px" :width "100%" :height "42px" :anchor "top center")
+  :reserve (struts :side "top" :distance "42px")
+  (bar :out out :tray tray))
+
+(defwindow calendar
+  :monitor 0
+  :windowtype "dialog"
+  :stacking "fg"
+  :geometry (geometry :x "-150px" :y "48px" :anchor "top right")
+  (box :class "calbox" (calendar :class "cal")))
