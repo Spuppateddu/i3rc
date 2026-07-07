@@ -7,7 +7,7 @@ export LC_ALL=C.UTF-8
 
 source "$HOME/.i3rc/scripts/player_lib.sh"
 
-TITLE_W=45
+TITLE_W=40
 SEP="   •   "
 FRAMES=6      # scroll frames between metadata refreshes
 TICK=0.3

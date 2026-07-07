@@ -46,7 +46,7 @@
         (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh next" "󰒭")
         (vsep)
         (button :class "ptitle" :onclick "$HOME/.i3rc/scripts/player_ctl.sh show-title"
-          (label :width 360 :text {player.display}))
+          (label :width 320 :text {player.display}))
         (vsep)
         (button :class {player.shuffle == "On" ? "pbtn on" : "pbtn"}
                 :onclick "$HOME/.i3rc/scripts/player_ctl.sh shuffle-toggle" "󰒝")
@@ -114,7 +114,7 @@
       (label :text {formattime(EWW_TIME, "%H:%M")}))))
 
 (defwidget status_island [tray]
-  (box :class "island status" :space-evenly false :spacing 12 :hexpand true
+  (box :class "island status" :space-evenly false :spacing 10 :hexpand true
     (box :hexpand true) ; flex spacer: pushes segments to the right edge
     (netseg)
     (vsep)
@@ -128,7 +128,7 @@
     (revealer :reveal {tray == "true"} :transition "none"
       (box :space-evenly false :spacing 12
         (vsep)
-        (box :class "trayslot" :width 150 :space-evenly false
+        (box :class "trayslot" :width 120 :space-evenly false
           (systray :spacing 6 :icon-size 18 :prepend-new true :halign "center" :hexpand true))))
     (vsep)
     (button :class "seg power" :onclick "$HOME/.i3rc/scripts/powermenu.sh &"

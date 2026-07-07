@@ -21,13 +21,13 @@ $peach:    #fab387;
 
 window { background: transparent; }
 
-.bar { background: transparent; padding: 4px 4px; }
+.bar { background: transparent; padding: 4px 6px; }
 
 .island {
   background: rgba(30, 30, 46, 0.94);
   border: 1px solid rgba(69, 71, 90, 0.55);
   border-radius: 14px;
-  padding: 3px 8px;
+  padding: 3px 12px;
   margin: 0 3px;
   min-height: 26px; // keep total bar height at the 42px the struts reserve
   color: $text;
@@ -41,7 +41,7 @@ window { background: transparent; }
 
 // workspaces
 .ws {
-  padding: 0 5px;
+  padding: 0 9px;
   border-radius: 9px;
   color: $subtext;
   transition: all 150ms ease;
@@ -69,7 +69,7 @@ window { background: transparent; }
 
 // status segments
 .seg {
-  padding: 1px 5px;
+  padding: 1px 7px;
   border-radius: 9px;
   transition: all 150ms ease;
 }
@@ -93,10 +93,10 @@ window { background: transparent; }
 .lavender { color: $lavender; }
 .dim      { color: $subtext; }
 
-.power { padding: 1px 7px; }
+.power { padding: 1px 9px; }
 
 // same horizontal padding as .seg so gaps around dividers stay even
-.pad { padding: 1px 5px; }
+.pad { padding: 1px 7px; }
 
 // divider between logical groups, fading at both ends
 .vsep {
