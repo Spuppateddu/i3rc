@@ -68,6 +68,9 @@ bindsym $mod+Tab exec --no-startup-id rofi -show window -config ~/.i3rc/rofi/con
 # Toggle terminal (Alacritty) light/dark colour scheme.
 bindsym $mod+Shift+t exec --no-startup-id ~/.i3rc/scripts/theme.sh toggle
 
+# Toggle the top menu bar (eww).
+bindsym $mod+Shift+b exec --no-startup-id ~/.i3rc/scripts/toggle_eww.sh
+
 # Screenshot.
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 bindsym Control+Shift+4 exec --no-startup-id flameshot gui
