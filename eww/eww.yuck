@@ -3,7 +3,7 @@
 
 ;; ── Data sources ─────────────────────────────────────────────────────────────
 (deflisten wsmap :initial "{}" "$HOME/.i3rc/eww/scripts/workspaces.sh")
-(deflisten player :initial '{"status":"none","title":"","artist":"","shuffle":"","loop":"","mpd_playing":false}'
+(deflisten player :initial '{"status":"none","title":"","artist":"","display":"","shuffle":"","loop":"","mpd_playing":false}'
   "$HOME/.i3rc/eww/scripts/player.sh")
 (deflisten net :initial '{"kind":"off","label":"offline","down":"0B","up":"0B"}'
   "$HOME/.i3rc/eww/scripts/network.sh")
@@ -19,16 +19,21 @@
     "${ws.label}"))
 
 (defwidget workspaces [out]
-  (box :class "island" :space-evenly false :spacing 3
-    (for ws in {wsmap[out] ?: []}
-      (wsbtn :ws ws))))
+  (box :class "island" :space-evenly false :spacing 2 :hexpand true
+    (box :space-evenly false :spacing 2 :halign "start"
+      (for ws in {wsmap[out] ?: []}
+        (wsbtn :ws ws)))))
 
 ;; Workspaces living on other outputs — separate detached card.
 (defwidget workspaces_other [out]
-  (box :class "island detached" :space-evenly false :spacing 3
+  (box :class "island detached" :space-evenly false :spacing 2
        :visible {arraylength(jq(wsmap, "[to_entries[] | select(.key != \"${out}\") | .value[]]")) > 0}
     (for ws in {jq(wsmap, "[to_entries[] | select(.key != \"${out}\") | .value[]]")}
       (wsbtn :ws ws))))
+
+;; Thin fading divider between logical groups inside an island.
+(defwidget vsep []
+  (box :class "vsep"))
 
 ;; ── Music island ─────────────────────────────────────────────────────────────
 (defwidget player_island []
@@ -39,14 +44,16 @@
         (button :class "pbtn accent" :onclick "$HOME/.i3rc/scripts/player_ctl.sh toggle"
           {player.status == "Playing" ? "󰏤" : "󰐊"})
         (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh next" "󰒭")
+        (vsep)
         (button :class "ptitle" :onclick "$HOME/.i3rc/scripts/player_ctl.sh show-title"
-          (label :limit-width 45
-                 :text {player.artist != "" ? "${player.title} — ${player.artist}" : player.title}))
+          (label :width 360 :text {player.display}))
+        (vsep)
         (button :class {player.shuffle == "On" ? "pbtn on" : "pbtn"}
                 :onclick "$HOME/.i3rc/scripts/player_ctl.sh shuffle-toggle" "󰒝")
         (button :class {player.loop == "Playlist" ? "pbtn on" :
                         player.loop == "Track"    ? "pbtn track" : "pbtn"}
-                :onclick "$HOME/.i3rc/scripts/player_ctl.sh loop-cycle" "󰑖")))
+                :onclick "$HOME/.i3rc/scripts/player_ctl.sh loop-cycle" "󰑖")
+        (vsep)))
     (button :class {player.mpd_playing ? "pbtn stop" : "pbtn on"}
             :onclick "$HOME/.i3rc/scripts/player_ctl.sh folder-click"
       {player.mpd_playing ? "󰓛" : "󱍙"})))
@@ -58,9 +65,10 @@
     (box :space-evenly false :spacing 6
       (label :class {net.kind == "off" ? "icon red" : "icon blue"}
              :text {net.kind == "wifi" ? "󰖩" : net.kind == "eth" ? "󰈀" : "󰖪"})
-      (label :text {net.kind == "off" ? "offline" : net.label})
-      (label :class "green" :visible {net.kind != "off"} :text "↓${net.down}")
-      (label :class "red" :visible {net.kind != "off"} :text "↑${net.up}"))))
+      (label :class "val netname" :limit-width 10
+             :text {net.kind == "off" ? "offline" : net.label})
+      (label :class "green val netrate" :text {net.kind == "off" ? "" : "↓${net.down}"})
+      (label :class "red val netrate" :text {net.kind == "off" ? "" : "↑${net.up}"}))))
 
 (defwidget volseg []
   (eventbox :onscroll "$HOME/.i3rc/eww/scripts/volume.sh scroll {}"
@@ -71,20 +79,22 @@
                :text {vol.muted ? "󰝟" :
                       vol.level < 34 ? "󰕿" :
                       vol.level < 67 ? "󰖀" : "󰕾"})
-        (label :text {vol.muted ? "muted" : "${vol.level}%"})))))
+        (label :class "val vol" :text {vol.muted ? "muted" : "${vol.level}%"})))))
 
 (defwidget sysinfo []
-  (box :space-evenly false :spacing 12
+  (box :class "pad" :space-evenly false :spacing 12
     (box :space-evenly false :spacing 6
       (label :class "icon peach" :text "󰻠")
-      (label :text "CPU ${round(EWW_CPU.avg, 1)}%"))
+      (label :class "val cpu" :text "CPU ${round(EWW_CPU.avg, 1)}%"))
     (box :space-evenly false :spacing 6
       (label :class "icon yellow" :text "󰍛")
-      (label :text "RAM ${round(EWW_RAM.used_mem / 1073741824, 1)}/${round(EWW_RAM.total_mem / 1073741824, 1)}G"))))
+      (label :class "val ram" :text "RAM ${round(EWW_RAM.used_mem / 1073741824, 1)}/${round(EWW_RAM.total_mem / 1073741824, 1)}G"))))
 
 (defwidget batteryseg []
-  (box :visible {EWW_BATTERY != ""} :space-evenly false :spacing 6
-    (label :class {EWW_BATTERY.BAT0.status == "Charging" || EWW_BATTERY.BAT0.status == "Full" ? "icon green" :
+  (box :visible {EWW_BATTERY != ""} :space-evenly false :spacing 12
+    (vsep)
+    (box :class "pad" :space-evenly false :spacing 6
+      (label :class {EWW_BATTERY.BAT0.status == "Charging" || EWW_BATTERY.BAT0.status == "Full" ? "icon green" :
                    EWW_BATTERY.BAT0.capacity <= 20 ? "icon red" :
                    EWW_BATTERY.BAT0.capacity <= 40 ? "icon peach" :
                    EWW_BATTERY.BAT0.capacity <= 60 ? "icon yellow" : "icon green"}
@@ -93,7 +103,7 @@
                   EWW_BATTERY.BAT0.capacity <= 40 ? "󰁼" :
                   EWW_BATTERY.BAT0.capacity <= 60 ? "󰁾" :
                   EWW_BATTERY.BAT0.capacity <= 80 ? "󰂀" : "󰁹"})
-    (label :text "${EWW_BATTERY.BAT0.capacity}%")))
+      (label :class "val bat" :text "${EWW_BATTERY.BAT0.capacity}%"))))
 
 (defwidget clockseg []
   (button :class "seg" :onclick "$HOME/.local/bin/eww --config $HOME/.i3rc/eww open --toggle calendar"
@@ -104,23 +114,37 @@
       (label :text {formattime(EWW_TIME, "%H:%M")}))))
 
 (defwidget status_island [tray]
-  (box :class "island status" :space-evenly false :spacing 12
+  (box :class "island status" :space-evenly false :spacing 12 :hexpand true
+    (box :hexpand true) ; flex spacer: pushes segments to the right edge
     (netseg)
+    (vsep)
     (volseg)
+    (vsep)
     (sysinfo)
     (batteryseg)
+    (vsep)
     (clockseg)
+    ;; fixed-width slot so tray icons appearing/leaving never shift the segments
     (revealer :reveal {tray == "true"} :transition "none"
-      (systray :spacing 6 :icon-size 18 :prepend-new true))
+      (box :space-evenly false :spacing 12
+        (vsep)
+        (box :class "trayslot" :width 150 :space-evenly false
+          (systray :spacing 6 :icon-size 18 :prepend-new true :halign "center" :hexpand true))))
+    (vsep)
     (button :class "seg power" :onclick "$HOME/.i3rc/scripts/powermenu.sh &"
       (label :class "icon red" :text "󰐥"))))
 
 ;; ── Bar ──────────────────────────────────────────────────────────────────────
+;; Flex layout: workspaces and status stretch equally to fill leftover
+;; space; the player island keeps its fixed width between them.
+;; (No centerbox: forcing the player to exact screen center would squeeze
+;; the sides below their minimum width and make islands overlap.)
 (defwidget bar [out tray]
-  (centerbox :class "bar"
-    (box :halign "start" :space-evenly false (workspaces :out out) (workspaces_other :out out))
-    (box :halign "center" :space-evenly false (player_island))
-    (box :halign "end" :space-evenly false (status_island :tray tray))))
+  (box :class "bar" :space-evenly false
+    (workspaces :out out)
+    (workspaces_other :out out)
+    (player_island)
+    (status_island :tray tray)))
 
 ;; Opened per output: eww open bar --screen <name> --id bar-<name> --arg out=<name> --arg tray=true|false
 (defwindow bar [out tray]
