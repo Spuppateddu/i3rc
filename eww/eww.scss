@@ -21,15 +21,15 @@ $peach:    #fab387;
 
 window { background: transparent; }
 
-.bar { background: transparent; padding: 4px 6px; }
+.bar { background: transparent; padding: 0; }
 
 .island {
   background: rgba(30, 30, 46, 0.94);
-  border: 1px solid rgba(69, 71, 90, 0.55);
-  border-radius: 14px;
-  padding: 3px 12px;
-  margin: 0 3px;
-  min-height: 26px; // keep total bar height at the 42px the struts reserve
+  border: none;
+  border-radius: 0;
+  padding: 2px 12px;
+  margin: 0;
+  min-height: 20px; // keep total bar height at the 34px the struts reserve
   color: $text;
 }
 
