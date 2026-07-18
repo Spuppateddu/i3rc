@@ -98,23 +98,8 @@ else
     ok "apt packages installed."
 fi
 
-# ── 2. Cascadia Code Nerd Font ────────────────────────────────────────────
-step "Checking Cascadia Code Nerd Font"
-
-if fc-list 2>/dev/null | grep -iE "caskaydiacove.*nerd" >/dev/null; then
-    skip "CaskaydiaCove Nerd Font already installed."
-else
-    url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/CascadiaCode.zip"
-    tmp="/tmp/CascadiaCode.$$.zip"
-    dest="$HOME/.local/share/fonts"
-    step "Downloading Cascadia Code Nerd Font"
-    run mkdir -p "$dest"
-    run curl -fL --progress-bar -o "$tmp" "$url"
-    run unzip -oq "$tmp" -d "$dest"
-    run rm -f "$tmp"
-    run fc-cache -f
-    ok "CaskaydiaCove Nerd Font installed."
-fi
+# The Nerd Font and cursor theme are cross-cutting (bar, terminal, editor) and
+# are owned by best-linux-environment (basic/50-fonts-cursor.sh), not here.
 
 # ── 2.2. eww bar (built from source — not packaged for Ubuntu) ────────────
 step "Checking eww"
@@ -145,67 +130,6 @@ fi
 if command -v gsettings >/dev/null 2>&1; then
     run gsettings set org.blueman.general plugin-list "['!StatusIcon']" || \
         warn "Could not disable blueman tray icon."
-fi
-
-# ── 2.5. BreezeX-Dark cursor theme ────────────────────────────────────────
-step "Checking BreezeX-Dark cursor theme"
-
-CURSOR_THEME="BreezeX-Dark"
-CURSOR_VERSION="v2.0.1"
-# Must live under ~/.icons (or /usr/share/icons): libXcursor's default search
-# path does NOT include ~/.local/share/icons, so xsetroot can't find it there.
-CURSOR_DIR="$HOME/.icons/$CURSOR_THEME"
-
-if [[ -d "$CURSOR_DIR" ]]; then
-    skip "$CURSOR_THEME cursor already installed."
-else
-    url="https://github.com/ful1e5/BreezeX_Cursor/releases/download/$CURSOR_VERSION/BreezeX-Dark.tar.xz"
-    tmp="/tmp/BreezeX-Dark.$$.tar.xz"
-    dest="$HOME/.icons"
-    step "Downloading $CURSOR_THEME cursor ($CURSOR_VERSION)"
-    run mkdir -p "$dest"
-    run curl -fL --progress-bar -o "$tmp" "$url"
-    run tar -xf "$tmp" -C "$dest"
-    run rm -f "$tmp"
-    ok "$CURSOR_THEME cursor installed."
-fi
-
-# Make it the X11 default — no DE settings GUI under i3, so apps resolve the
-# "default" theme to BreezeX-Dark via this index.theme.
-DEFAULT_INDEX="$HOME/.icons/default/index.theme"
-if [[ -f "$DEFAULT_INDEX" ]] && grep -q "Inherits=$CURSOR_THEME" "$DEFAULT_INDEX"; then
-    skip "Default cursor already set to $CURSOR_THEME."
-else
-    run mkdir -p "$HOME/.icons/default"
-    if $DRY_RUN; then
-        printf '%s  would write:%s Inherits=%s → %s\n' "$C_DIM" "$C_OFF" "$CURSOR_THEME" "$DEFAULT_INDEX"
-    else
-        printf '[Icon Theme]\nInherits=%s\n' "$CURSOR_THEME" > "$DEFAULT_INDEX"
-    fi
-    ok "Default cursor set to $CURSOR_THEME."
-fi
-
-# Export XCURSOR_* in ~/.xsessionrc — GDM/Xsession source this BEFORE i3
-# starts, so i3 sets the root cursor to BreezeX-Dark itself (no flash/reset on
-# restart). Requires one full logout/login to take effect.
-XSR="$HOME/.xsessionrc"
-if [[ -f "$XSR" ]] && grep -q "^export XCURSOR_THEME=$CURSOR_THEME$" "$XSR"; then
-    skip "~/.xsessionrc already exports XCURSOR_THEME."
-else
-    if $DRY_RUN; then
-        printf '%s  would set:%s XCURSOR_THEME/SIZE → %s\n' "$C_DIM" "$C_OFF" "$XSR"
-    else
-        touch "$XSR"
-        sed -i '/^export XCURSOR_\(THEME\|SIZE\)=/d' "$XSR"
-        printf 'export XCURSOR_THEME=%s\nexport XCURSOR_SIZE=24\n' "$CURSOR_THEME" >> "$XSR"
-    fi
-    ok "XCURSOR_* exported in ~/.xsessionrc (log out/in to apply)."
-fi
-
-# GTK apps read the cursor theme from gsettings separately.
-if command -v gsettings >/dev/null 2>&1; then
-    run gsettings set org.gnome.desktop.interface cursor-theme "$CURSOR_THEME" || \
-        warn "Could not set gsettings cursor-theme."
 fi
 
 # ── 3. i3 include ─────────────────────────────────────────────────────────
