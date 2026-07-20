@@ -65,7 +65,7 @@
     (box :space-evenly false :spacing 6
       (label :class {net.kind == "off" ? "icon red" : "icon blue"}
              :text {net.kind == "wifi" ? "󰖩" : net.kind == "eth" ? "󰈀" : "󰖪"})
-      (label :class "val netname" :limit-width 10
+      (label :class "val netname" :limit-width 20
              :text {net.kind == "off" ? "offline" : net.label})
       (label :class "green val netrate" :text {net.kind == "off" ? "" : "↓${net.down}"})
       (label :class "red val netrate" :text {net.kind == "off" ? "" : "↑${net.up}"}))))
