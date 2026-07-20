@@ -169,9 +169,9 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # ── Look: gaps, borders, colors (Catppuccin Mocha) ────────────────────────
-for_window [class=".*"] border pixel 0
-default_border        pixel 0
-default_floating_border pixel 0
+for_window [class=".*"] border pixel 2
+default_border        pixel 2
+default_floating_border pixel 2
 hide_edge_borders smart
 
 gaps inner 0
@@ -179,7 +179,7 @@ gaps outer 0
 smart_gaps on
 
 # class                 border    backgr.   text      indicator child_border
-client.focused          #b4befe   #b4befe   #1e1e2e   #cba6f7   #b4befe
+client.focused          #cba6f7   #cba6f7   #1e1e2e   #cba6f7   #cba6f7
 client.focused_inactive #313244   #313244   #a6adc8   #45475a   #313244
 client.unfocused        #1e1e2e   #1e1e2e   #a6adc8   #45475a   #1e1e2e
 client.urgent           #f38ba8   #f38ba8   #1e1e2e   #f38ba8   #f38ba8
