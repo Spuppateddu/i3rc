@@ -13,3 +13,6 @@ CLAUDE.md
 # Build / runtime artifacts
 *.log
 /tmp/
+
+# Machine-specific i3 overrides (per-PC display scaling, etc.)
+*.local

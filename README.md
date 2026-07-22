@@ -14,11 +14,39 @@ notifications, and mpd + ncmpcpp for offline music.
 - **Music daemon:** [mpd/mpd.conf](./mpd/mpd.conf) + [ncmpcpp/config](./ncmpcpp/config)
 - **Scripts:** [scripts/](./scripts/) — wallpaper cycle, bar launcher, power/bluetooth menus, music helpers
 
+## Machine-specific settings
+
+Anything that should apply to **only one computer** (and never be committed or
+shared with people who clone this repo) goes in:
+
+```
+~/.i3rc/config.local
+```
+
+The main [config](./config) ends with `include ~/.i3rc/*.local`, so this file is
+loaded **last** — meaning it can override anything in the shared config. Any
+`*.local` file is git-ignored, and the wildcard is a harmless no-op on machines
+that don't have one, so the repo stays clean and portable.
+
+Use plain i3 config syntax. Typical uses: per-monitor layout, extra keybinds, or
+display scaling. For example, to make everything on a low-res laptop panel
+smaller:
+
+```
+# ~/.i3rc/config.local
+exec_always --no-startup-id xrandr --output eDP-1 --scale 1.25x1.25
+```
+
+`xrandr --scale` renders the desktop at a larger virtual size and shrinks it onto
+the panel — higher number = smaller UI. Reset with `--scale 1x1`. Reload i3 after
+editing with `$mod+Shift+c`.
+
 ## Quick layout
 
 ```
 ~/.i3rc/
 ├── config                     # i3 main config (included from ~/.config/i3/config)
+├── config.local              # per-machine overrides (git-ignored, optional)
 ├── INSTALL.md                 # package list + step-by-step setup
 ├── eww/
 │   ├── eww.yuck               # bar layout: workspaces, music, status, calendar

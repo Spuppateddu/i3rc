@@ -192,3 +192,9 @@ client.background       #282828
 include ~/.cache/i3/focus-override.conf
 
 # ── No built-in i3bar — the eww bar is launched by launch_eww.sh ─────────
+
+# ── Machine-specific overrides (git-ignored, not shared across PCs) ──────
+# Put per-computer settings in ~/.i3rc/config.local (see README). It is loaded
+# last so it can override anything above. The *.local wildcard matches nothing
+# on machines that don't have such a file, so this is safely a no-op there.
+include ~/.i3rc/*.local
