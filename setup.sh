@@ -197,6 +197,11 @@ link "$REPO/picom/picom.conf"     "$HOME/.config/picom/picom.conf"
 link "$REPO/dunst/dunstrc"        "$HOME/.config/dunst/dunstrc"
 link "$REPO/mpd/mpd.conf"         "$HOME/.config/mpd/mpd.conf"
 link "$REPO/ncmpcpp/config"       "$HOME/.config/ncmpcpp/config"
+# GTK menu theming (nm-applet, blueman tray menus) — Catppuccin restyle
+link "$REPO/gtk/gtk.css"          "$HOME/.config/gtk-3.0/gtk.css"
+link "$REPO/gtk/settings.ini"     "$HOME/.config/gtk-3.0/settings.ini"
+link "$REPO/gtk/gtk.css"          "$HOME/.config/gtk-4.0/gtk.css"
+link "$REPO/gtk/settings.ini"     "$HOME/.config/gtk-4.0/settings.ini"
 
 # ── 5. Make scripts executable ────────────────────────────────────────────
 step "Ensuring scripts are executable"
