@@ -79,7 +79,6 @@ window { background: transparent; }
 
 // reserved value slots: sized for the widest possible value so
 // changing digits never move icons or neighbor segments
-.val.netname { min-width: 80px; }
 .val.netrate { min-width: 58px; }  // fits "↓999.9M"
 .val.vol     { min-width: 42px; }  // fits "muted"
 .val.cpu     { min-width: 80px; }  // fits "CPU 100.0%"
