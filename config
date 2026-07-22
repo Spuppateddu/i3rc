@@ -162,28 +162,33 @@ mode "resize" {
     bindsym Up    resize shrink height 10 px or 10 ppt
     bindsym Right resize grow   width 10 px or 10 ppt
 
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym $mod+r mode "default"
+    bindsym Return exec --no-startup-id ~/.i3rc/scripts/resize_border.sh off
+    bindsym Escape exec --no-startup-id ~/.i3rc/scripts/resize_border.sh off
+    bindsym $mod+r exec --no-startup-id ~/.i3rc/scripts/resize_border.sh off
 }
-bindsym $mod+r mode "resize"
+bindsym $mod+r exec --no-startup-id ~/.i3rc/scripts/resize_border.sh on
 
-# ── Look: gaps, borders, colors (Catppuccin Mocha) ────────────────────────
+# ── Look: gaps, borders, colors (Gruvbox Dark) ────────────────────────────
 for_window [class=".*"] border pixel 2
 default_border        pixel 2
 default_floating_border pixel 2
-hide_edge_borders smart
+# 'none' keeps the focused border visible even when a single window fills the screen
+hide_edge_borders none
 
 gaps inner 0
 gaps outer 0
 smart_gaps on
 
 # class                 border    backgr.   text      indicator child_border
-client.focused          #cba6f7   #cba6f7   #1e1e2e   #cba6f7   #cba6f7
-client.focused_inactive #313244   #313244   #a6adc8   #45475a   #313244
-client.unfocused        #1e1e2e   #1e1e2e   #a6adc8   #45475a   #1e1e2e
-client.urgent           #f38ba8   #f38ba8   #1e1e2e   #f38ba8   #f38ba8
-client.placeholder      #1e1e2e   #1e1e2e   #cdd6f4   #1e1e2e   #1e1e2e
-client.background       #1e1e2e
+client.focused          #d65d0e   #d65d0e   #282828   #d65d0e   #d65d0e
+client.focused_inactive #3c3836   #3c3836   #a89984   #504945   #3c3836
+client.unfocused        #282828   #282828   #a89984   #504945   #282828
+client.urgent           #fb4934   #fb4934   #282828   #fb4934   #fb4934
+client.placeholder      #282828   #282828   #ebdbb2   #282828   #282828
+client.background       #282828
+
+# Resize mode recolors the focused border red via this override file
+# (see scripts/resize_border.sh). Empty when not in resize mode.
+include ~/.cache/i3/focus-override.conf
 
 # ── No built-in i3bar — the eww bar is launched by launch_eww.sh ─────────

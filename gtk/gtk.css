@@ -1,17 +1,17 @@
-/* Catppuccin Mocha restyle for GTK menus (nm-applet, blueman, …).
+/* Gruvbox Dark restyle for GTK menus (nm-applet, blueman, …).
  * Loaded as user CSS on top of the base theme, so it wins.
  * Palette matches ~/.i3rc/eww/eww.scss. */
 
-@define-color cat_base     #1e1e2e;
-@define-color cat_mantle   #181825;
-@define-color cat_surface0 #313244;
-@define-color cat_surface1 #45475a;
-@define-color cat_overlay  #6c7086;
-@define-color cat_text     #cdd6f4;
-@define-color cat_subtext  #a6adc8;
-@define-color cat_blue     #89b4fa;
-@define-color cat_lavender #b4befe;
-@define-color cat_mauve    #cba6f7;
+@define-color cat_base     #282828;
+@define-color cat_mantle   #1d2021;
+@define-color cat_surface0 #3c3836;
+@define-color cat_surface1 #504945;
+@define-color cat_overlay  #665c54;
+@define-color cat_text     #ebdbb2;
+@define-color cat_subtext  #a89984;
+@define-color cat_blue     #83a598;
+@define-color cat_lavender #fe8019;
+@define-color cat_mauve    #d3869b;
 
 /* ── Menu surface (GTK3 popup + GTK4/popover) ──────────────────────────── */
 menu,

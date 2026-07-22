@@ -1,17 +1,17 @@
-/* Catppuccin Mocha launcher theme */
+/* Gruvbox Dark launcher theme */
 
 * {
-    base:     #1e1e2e;
-    mantle:   #181825;
-    crust:    #11111b;
-    surface0: #313244;
-    surface1: #45475a;
-    text:     #cdd6f4;
-    subtext:  #a6adc8;
-    blue:     #89b4fa;
-    lavender: #b4befe;
-    mauve:    #cba6f7;
-    red:      #f38ba8;
+    base:     #282828;
+    mantle:   #1d2021;
+    crust:    #1d2021;
+    surface0: #3c3836;
+    surface1: #504945;
+    text:     #ebdbb2;
+    subtext:  #a89984;
+    blue:     #83a598;
+    lavender: #fe8019;
+    mauve:    #d3869b;
+    red:      #fb4934;
     transparent: #00000000;
 
     font: "Cascadia Code NF 11";

@@ -36,14 +36,14 @@ case "$1" in
         ;;
     folder-icon)
         if ! command -v playerctl >/dev/null 2>&1; then
-            printf '%%{F#a6e3a1}%%{T2}%s%%{T-}%%{F-}\n' "$G_FOLDER"
+            printf '%%{F#b8bb26}%%{T2}%s%%{T-}%%{F-}\n' "$G_FOLDER"
             exit 0
         fi
         emit_folder() {
             if [ "$(playerctl -p mpd status 2>/dev/null)" = "Playing" ]; then
-                printf '%%{F#f38ba8}%%{T2}%s%%{T-}%%{F-}\n' "$G_STOP"
+                printf '%%{F#fb4934}%%{T2}%s%%{T-}%%{F-}\n' "$G_STOP"
             else
-                printf '%%{F#a6e3a1}%%{T2}%s%%{T-}%%{F-}\n' "$G_FOLDER"
+                printf '%%{F#b8bb26}%%{T2}%s%%{T-}%%{F-}\n' "$G_FOLDER"
             fi
         }
         exec 3< <(playerctl --follow -p mpd status 2>/dev/null)
@@ -84,15 +84,15 @@ case "$1" in
         ;;
     shuffle-icon)
         case "$(pctl shuffle 2>/dev/null)" in
-            On) printf '%%{F#a6e3a1}%%{T2}%s%%{T-}%%{F-}\n' "$G_SHUFFLE" ;;
-            *)  printf '%%{F#a6adc8}%%{T2}%s%%{T-}%%{F-}\n' "$G_SHUFFLE" ;;
+            On) printf '%%{F#b8bb26}%%{T2}%s%%{T-}%%{F-}\n' "$G_SHUFFLE" ;;
+            *)  printf '%%{F#a89984}%%{T2}%s%%{T-}%%{F-}\n' "$G_SHUFFLE" ;;
         esac
         ;;
     loop-icon)
         case "$(pctl loop 2>/dev/null)" in
-            Track)    printf '%%{F#fab387}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
-            Playlist) printf '%%{F#a6e3a1}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
-            *)        printf '%%{F#a6adc8}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
+            Track)    printf '%%{F#fe8019}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
+            Playlist) printf '%%{F#b8bb26}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
+            *)        printf '%%{F#a89984}%%{T2}%s%%{T-}%%{F-}\n' "$G_LOOP" ;;
         esac
         ;;
     toggle-icon)

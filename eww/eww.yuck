@@ -125,7 +125,7 @@
       (box :space-evenly false :spacing 12
         (vsep)
         (box :class "trayslot" :width 120 :space-evenly false
-          (systray :spacing 6 :icon-size 18 :prepend-new true :halign "center" :hexpand true))))
+          (systray :spacing 6 :icon-size 16 :prepend-new true :halign "center" :hexpand true))))
     (vsep)
     (button :class "seg power" :onclick "$HOME/.i3rc/scripts/powermenu.sh &"
       (label :class "icon red" :text "󰐥"))))
@@ -146,8 +146,8 @@
 (defwindow bar [out tray]
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "0%" :y "0px" :width "100%" :height "34px" :anchor "top center")
-  :reserve (struts :side "top" :distance "34px")
+  :geometry (geometry :x "0%" :y "0px" :width "100%" :height "28px" :anchor "top center")
+  :reserve (struts :side "top" :distance "28px")
   (bar :out out :tray tray))
 
 (defwindow calendar

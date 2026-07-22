@@ -1,6 +1,6 @@
 # .i3rc
 
-My i3 window manager setup: Catppuccin Mocha palette, eww top bar (floating
+My i3 window manager setup: Gruvbox Dark palette, eww top bar (floating
 islands with music + volume controls, per-monitor workspaces, calendar popup,
 system tray), rofi launcher, random wallpapers, picom compositing, dunst
 notifications, and mpd + ncmpcpp for offline music.
@@ -22,7 +22,7 @@ notifications, and mpd + ncmpcpp for offline music.
 ├── INSTALL.md                 # package list + step-by-step setup
 ├── eww/
 │   ├── eww.yuck               # bar layout: workspaces, music, status, calendar
-│   ├── eww.scss               # Catppuccin Mocha styling
+│   ├── eww.scss               # Gruvbox Dark styling
 │   └── scripts/               # JSON emitters (workspaces, player, network, volume)
 ├── rofi/{config,launcher,powermenu}.rasi
 ├── picom/picom.conf

@@ -1,4 +1,4 @@
-# ncmpcpp — Catppuccin-ish dark theme.
+# ncmpcpp — Gruvbox dark theme.
 
 mpd_host                           = localhost
 mpd_port                           = 6600
@@ -12,7 +12,7 @@ autocenter_mode                    = yes
 centered_cursor                    = yes
 progressbar_look                   = "━━─"
 progressbar_color                  = "240"
-progressbar_elapsed_color          = "147"
+progressbar_elapsed_color          = "208"
 
 now_playing_prefix                 = "$b$8"
 now_playing_suffix                 = "$/b$9"

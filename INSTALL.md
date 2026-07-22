@@ -1,7 +1,7 @@
 # Install guide — i3 rice
 
 Full setup for this i3 configuration on a fresh Ubuntu (tested on 25.10). At
-the end you get: i3 with gaps + Catppuccin colors, an eww top bar (floating
+the end you get: i3 with gaps + Gruvbox colors, an eww top bar (floating
 islands, built from source), rofi
 launcher, random wallpaper cycling, picom compositing, dunst notifications,
 and mpd + ncmpcpp for music with controls in the top bar.
@@ -189,8 +189,8 @@ If the top bar doesn't appear:
 
 ## 9. Customizing
 
-- **Colors** — search `#1e1e2e` / `#b4befe` etc. The palette is Catppuccin
-  Mocha; swap values consistently across `eww/eww.scss`,
+- **Colors** — search `#282828` / `#fe8019` etc. The palette is Gruvbox
+  Dark; swap values consistently across `eww/eww.scss`,
   `rofi/launcher.rasi`, `dunst/dunstrc`, and the `client.*` lines in
   `config`.
 - **Bar widgets/layout** — edit `eww/eww.yuck` (widgets, islands) and

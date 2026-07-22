@@ -1,22 +1,22 @@
-// Catppuccin Mocha
-$base:     #1e1e2e;
-$mantle:   #181825;
-$surface0: #313244;
-$surface1: #45475a;
-$text:     #cdd6f4;
-$subtext:  #a6adc8;
-$blue:     #89b4fa;
-$lavender: #b4befe;
-$mauve:    #cba6f7;
-$green:    #a6e3a1;
-$red:      #f38ba8;
-$yellow:   #f9e2af;
-$peach:    #fab387;
+// Gruvbox Dark (Medium)
+$base:     #282828;
+$mantle:   #1d2021;
+$surface0: #3c3836;
+$surface1: #504945;
+$text:     #ebdbb2;
+$subtext:  #a89984;
+$blue:     #83a598;
+$lavender: #fe8019;
+$mauve:    #d3869b;
+$green:    #b8bb26;
+$red:      #fb4934;
+$yellow:   #fabd2f;
+$peach:    #fe8019;
 
 * {
   all: unset;
   font-family: "CaskaydiaCove Nerd Font";
-  font-size: 13px;
+  font-size: 11px;
 }
 
 window { background: transparent; }
@@ -24,19 +24,19 @@ window { background: transparent; }
 .bar { background: transparent; padding: 0; }
 
 .island {
-  background: rgba(30, 30, 46, 0.94);
+  background: rgba(40, 40, 40, 0.94);
   border: none;
   border-radius: 0;
   padding: 2px 12px;
   margin: 0;
-  min-height: 20px; // keep total bar height at the 34px the struts reserve
+  min-height: 16px; // keep total bar height at the 28px the struts reserve
   color: $text;
 }
 
 // workspaces on the other (bar-less) monitor
 .island.detached {
-  background: rgba(24, 24, 37, 0.82);
-  border: 1px dashed rgba(166, 173, 200, 0.45);
+  background: rgba(29, 32, 33, 0.82);
+  border: 1px dashed rgba(168, 153, 132, 0.45);
 }
 
 // workspaces
@@ -56,11 +56,11 @@ window { background: transparent; }
   padding: 0 5px;
   border-radius: 8px;
   color: $subtext;
-  font-size: 15px;
+  font-size: 13px;
   transition: all 150ms ease;
 }
 .pbtn:hover  { background: $surface0; color: $text; }
-.pbtn.accent { color: $mauve; font-size: 17px; }
+.pbtn.accent { color: $mauve; font-size: 15px; }
 .pbtn.on     { color: $green; }
 .pbtn.track  { color: $peach; }
 .pbtn.stop   { color: $red; }
@@ -75,7 +75,7 @@ window { background: transparent; }
 }
 .seg:hover { background: $surface0; }
 
-.icon { font-size: 15px; margin-right: 3px; }
+.icon { font-size: 13px; margin-right: 3px; }
 
 // reserved value slots: sized for the widest possible value so
 // changing digits never move icons or neighbor segments
@@ -103,8 +103,8 @@ window { background: transparent; }
   margin: 5px 0;
   background: linear-gradient(to bottom,
               transparent,
-              rgba(180, 190, 254, 0.4) 30%,
-              rgba(180, 190, 254, 0.4) 70%,
+              rgba(254, 128, 25, 0.4) 30%,
+              rgba(254, 128, 25, 0.4) 70%,
               transparent);
 }
 

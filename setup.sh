@@ -141,6 +141,11 @@ INCLUDE_LINE="include \"$REPO/config\""
 
 run mkdir -p "$I3_CONFIG_DIR"
 
+# The config includes this file to recolor the focused border in resize mode
+# (scripts/resize_border.sh). Create it empty so the include never errors.
+run mkdir -p "$HOME/.cache/i3"
+[[ -f "$HOME/.cache/i3/focus-override.conf" ]] || run touch "$HOME/.cache/i3/focus-override.conf"
+
 # Detect an existing include that points at this repo, whether written with
 # an absolute path, ~, or $HOME.
 already_wired=false
@@ -197,7 +202,7 @@ link "$REPO/picom/picom.conf"     "$HOME/.config/picom/picom.conf"
 link "$REPO/dunst/dunstrc"        "$HOME/.config/dunst/dunstrc"
 link "$REPO/mpd/mpd.conf"         "$HOME/.config/mpd/mpd.conf"
 link "$REPO/ncmpcpp/config"       "$HOME/.config/ncmpcpp/config"
-# GTK menu theming (nm-applet, blueman tray menus) — Catppuccin restyle
+# GTK menu theming (nm-applet, blueman tray menus) — Gruvbox restyle
 link "$REPO/gtk/gtk.css"          "$HOME/.config/gtk-3.0/gtk.css"
 link "$REPO/gtk/settings.ini"     "$HOME/.config/gtk-3.0/settings.ini"
 link "$REPO/gtk/gtk.css"          "$HOME/.config/gtk-4.0/gtk.css"
