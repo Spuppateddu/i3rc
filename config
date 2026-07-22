@@ -180,7 +180,7 @@ gaps outer 0
 smart_gaps on
 
 # class                 border    backgr.   text      indicator child_border
-client.focused          #d65d0e   #d65d0e   #282828   #d65d0e   #d65d0e
+client.focused          #d3869b   #d3869b   #282828   #d3869b   #d3869b
 client.focused_inactive #3c3836   #3c3836   #a89984   #504945   #3c3836
 client.unfocused        #282828   #282828   #a89984   #504945   #282828
 client.urgent           #fb4934   #fb4934   #282828   #fb4934   #fb4934
