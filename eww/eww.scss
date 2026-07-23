@@ -108,6 +108,48 @@ window { background: transparent; }
               transparent);
 }
 
+// ── Density tiers ────────────────────────────────────────────────────────────
+// The values above are the `wide` tier: the widest gaps the bar ever uses.
+// On narrower outputs scripts/screen.sh puts `compact` or `dense` on .bar and
+// these rules tighten every padding and reserved slot, so the segments keep
+// fitting instead of overflowing off the right edge. The reserved .val widths
+// still fit their worst-case text (7.22px per char at 11px CaskaydiaCove —
+// the same cell width scripts/screen.sh budgets the title with).
+
+.bar.compact {
+  .island       { padding: 2px 8px; }
+  .seg, .pad    { padding: 1px 5px; }
+  .power        { padding: 1px 7px; }
+  .ws           { padding: 0 7px; }
+  .ptitle       { padding: 0 4px; }
+  .icon         { margin-right: 2px; }
+
+  .val.netrate  { min-width: 52px; }
+  .val.vol      { min-width: 38px; }
+  .val.cpu      { min-width: 74px; }
+  .val.ram      { min-width: 104px; }
+  .val.bat      { min-width: 32px; }
+}
+
+.bar.dense {
+  .island       { padding: 2px 5px; }
+  .seg, .pad    { padding: 1px 3px; }
+  .power        { padding: 1px 5px; }
+  .ws           { padding: 0 6px; }
+  .ptitle       { padding: 0 3px; }
+  .icon         { margin-right: 2px; }
+
+  // Already at the floor: these are the worst-case strings at 7.22px/char, so
+  // shrinking further would let a changing value push its neighbours around.
+  .val.netrate  { min-width: 52px; }  // "↓999.9M"
+  .val.vol      { min-width: 37px; }  // "muted"
+  .val.cpu      { min-width: 74px; }  // "CPU 100.0%"
+  .val.ram      { min-width: 102px; } // "RAM 15.4/15.1G"
+  .val.bat      { min-width: 30px; }  // "100%"
+
+  .vsep         { margin: 6px 0; }
+}
+
 // calendar popup
 .calbox {
   background: $base;

@@ -7,7 +7,8 @@ export LC_ALL=C.UTF-8
 
 source "$HOME/.i3rc/scripts/player_lib.sh"
 
-TITLE_W=40
+LAYOUT_STATE="${XDG_RUNTIME_DIR:-/tmp}/i3rc-eww-layout"
+TITLE_W=40    # overridden per density tier by layout_w below
 SEP="   •   "
 FRAMES=6      # scroll frames between metadata refreshes
 TICK=0.3
@@ -15,8 +16,23 @@ TICK=0.3
 STATUS="none" TITLE="" ARTIST="" SHUFFLE="" LOOP="" MPD=false
 SRC="" OFFSET=0 SCROLL=0 TEXT=""
 
+# The marquee is padded to an exact character count, so its width has to
+# follow the bar's density tier. screen.sh keeps that number in a state file;
+# re-reading it costs nothing and picks up monitor changes without a restart.
+layout_w() {
+    local LAY_TIER LAY_TITLE
+    [ -r "$LAYOUT_STATE" ] || return
+    # shellcheck disable=SC1090
+    . "$LAYOUT_STATE"
+    case "$LAY_TITLE" in
+        ''|*[!0-9]*) ;;
+        *) [ "$LAY_TITLE" -eq "$TITLE_W" ] || { TITLE_W=$LAY_TITLE; OFFSET=0; } ;;
+    esac
+}
+
 fetch() {
     local p
+    layout_w
     p=$(target_player)
     STATUS=""
     [ -n "$p" ] && STATUS=$(playerctl -p "$p" status 2>/dev/null)

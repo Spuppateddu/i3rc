@@ -9,6 +9,9 @@
   "$HOME/.i3rc/eww/scripts/network.sh")
 (deflisten vol :initial '{"level":0,"muted":false}'
   "$HOME/.i3rc/eww/scripts/volume.sh")
+;; Layout density for the current output — see scripts/screen.sh.
+(deflisten scr :initial '{"tier":"wide","w":1920,"gap":10,"group":12,"item":6,"title":40,"tray":120}'
+  "$HOME/.i3rc/eww/scripts/screen.sh")
 
 ;; ── Workspaces ───────────────────────────────────────────────────────────────
 (defwidget wsbtn [ws]
@@ -37,16 +40,18 @@
 
 ;; ── Music island ─────────────────────────────────────────────────────────────
 (defwidget player_island []
-  (box :class "island player" :space-evenly false :spacing 6
+  (box :class "island player" :space-evenly false :spacing {scr.item}
     (revealer :reveal {player.status != "none"} :transition "slideright" :duration "300ms"
-      (box :space-evenly false :spacing 6
+      (box :space-evenly false :spacing {scr.item}
         (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh prev" "󰒮")
         (button :class "pbtn accent" :onclick "$HOME/.i3rc/scripts/player_ctl.sh toggle"
           {player.status == "Playing" ? "󰏤" : "󰐊"})
         (button :class "pbtn" :onclick "$HOME/.i3rc/scripts/player_ctl.sh next" "󰒭")
         (vsep)
+        ;; No :width — player.sh pads `display` to exactly scr.title monospace
+        ;; chars, so the slot is already stable and scales with the tier.
         (button :class "ptitle" :onclick "$HOME/.i3rc/scripts/player_ctl.sh show-title"
-          (label :width 320 :text {player.display}))
+          (label :text {player.display}))
         (vsep)
         (button :class {player.shuffle == "On" ? "pbtn on" : "pbtn"}
                 :onclick "$HOME/.i3rc/scripts/player_ctl.sh shuffle-toggle" "󰒝")
@@ -60,7 +65,7 @@
 
 ;; ── Status island ────────────────────────────────────────────────────────────
 (defwidget netseg []
-  (box :class "seg pad" :space-evenly false :spacing 6
+  (box :class "seg pad" :space-evenly false :spacing {scr.item}
     (label :class {net.kind == "off" ? "icon red" : "icon blue"}
            :text {net.kind == "wifi" ? "󰖩" : net.kind == "eth" ? "󰈀" : "󰖪"})
     (label :class "green val netrate" :text {net.kind == "off" ? "" : "↓${net.down}"})
@@ -70,7 +75,7 @@
   (eventbox :onscroll "$HOME/.i3rc/eww/scripts/volume.sh scroll {}"
     (button :class "seg" :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle"
             :onrightclick "pavucontrol &"
-      (box :space-evenly false :spacing 6
+      (box :space-evenly false :spacing {scr.item}
         (label :class {vol.muted ? "icon red" : "icon green"}
                :text {vol.muted ? "󰝟" :
                       vol.level < 34 ? "󰕿" :
@@ -78,18 +83,18 @@
         (label :class "val vol" :text {vol.muted ? "muted" : "${vol.level}%"})))))
 
 (defwidget sysinfo []
-  (box :class "pad" :space-evenly false :spacing 12
-    (box :space-evenly false :spacing 6
+  (box :class "pad" :space-evenly false :spacing {scr.group}
+    (box :space-evenly false :spacing {scr.item}
       (label :class "icon peach" :text "󰻠")
       (label :class "val cpu" :text "CPU ${round(EWW_CPU.avg, 1)}%"))
-    (box :space-evenly false :spacing 6
+    (box :space-evenly false :spacing {scr.item}
       (label :class "icon yellow" :text "󰍛")
       (label :class "val ram" :text "RAM ${round(EWW_RAM.used_mem / 1073741824, 1)}/${round(EWW_RAM.total_mem / 1073741824, 1)}G"))))
 
 (defwidget batteryseg []
-  (box :visible {EWW_BATTERY != ""} :space-evenly false :spacing 12
+  (box :visible {EWW_BATTERY != ""} :space-evenly false :spacing {scr.group}
     (vsep)
-    (box :class "pad" :space-evenly false :spacing 6
+    (box :class "pad" :space-evenly false :spacing {scr.item}
       (label :class {EWW_BATTERY.BAT0.status == "Charging" || EWW_BATTERY.BAT0.status == "Full" ? "icon green" :
                    EWW_BATTERY.BAT0.capacity <= 20 ? "icon red" :
                    EWW_BATTERY.BAT0.capacity <= 40 ? "icon peach" :
@@ -103,14 +108,14 @@
 
 (defwidget clockseg []
   (button :class "seg" :onclick "$HOME/.local/bin/eww --config $HOME/.i3rc/eww open --toggle calendar"
-    (box :space-evenly false :spacing 6
+    (box :space-evenly false :spacing {scr.item}
       (label :class "icon lavender" :text "󰃭")
       (label :text {formattime(EWW_TIME, "%a %d %b")})
       (label :class "icon lavender" :text "󰥔")
       (label :text {formattime(EWW_TIME, "%H:%M")}))))
 
 (defwidget status_island [tray]
-  (box :class "island status" :space-evenly false :spacing 10 :hexpand true
+  (box :class "island status" :space-evenly false :spacing {scr.gap} :hexpand true
     (box :hexpand true) ; flex spacer: pushes segments to the right edge
     (netseg)
     (vsep)
@@ -122,10 +127,10 @@
     (clockseg)
     ;; fixed-width slot so tray icons appearing/leaving never shift the segments
     (revealer :reveal {tray == "true"} :transition "none"
-      (box :space-evenly false :spacing 12
+      (box :space-evenly false :spacing {scr.group}
         (vsep)
-        (box :class "trayslot" :width 120 :space-evenly false
-          (systray :spacing 6 :icon-size 16 :prepend-new true :halign "center" :hexpand true))))
+        (box :class "trayslot" :width {scr.tray} :space-evenly false
+          (systray :spacing {scr.item} :icon-size 16 :prepend-new true :halign "center" :hexpand true))))
     (vsep)
     (button :class "seg power" :onclick "$HOME/.i3rc/scripts/powermenu.sh &"
       (label :class "icon red" :text "󰐥"))))
@@ -135,8 +140,10 @@
 ;; space; the player island keeps its fixed width between them.
 ;; (No centerbox: forcing the player to exact screen center would squeeze
 ;; the sides below their minimum width and make islands overlap.)
+;; The tier class (wide/compact/dense) scales every gap and padding in the
+;; stylesheet; scr.gap/group/item do the same for the widget spacings.
 (defwidget bar [out tray]
-  (box :class "bar" :space-evenly false
+  (box :class "bar ${scr.tier}" :space-evenly false
     (workspaces :out out)
     (workspaces_other :out out)
     (player_island)
