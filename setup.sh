@@ -66,6 +66,7 @@ PACKAGES=(
     gsimplecal
     iw
     x11-xserver-utils x11-xkb-utils
+    xbanish
 )
 
 missing=()

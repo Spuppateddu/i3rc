@@ -64,7 +64,8 @@ editing with `$mod+Shift+c`.
     ├── bluetooth_menu.sh      # rofi adapter toggle + device connect
     ├── network_menu.sh        # rofi wifi scan/connect + VPN up/down
     ├── player_ctl.sh          # MPRIS music control (mpd priority)
-    └── play_folder.sh         # rofi-picked folder → mpd shuffle play
+    ├── play_folder.sh         # rofi-picked folder → mpd shuffle play
+    └── restart_xbanish.sh     # hide pointer while typing, show on mouse move
 ```
 
 See [INSTALL.md](./INSTALL.md) for the full keybinding cheat sheet.

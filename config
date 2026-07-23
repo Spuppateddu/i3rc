@@ -21,6 +21,8 @@ exec_always --no-startup-id dunst -config ~/.i3rc/dunst/dunstrc
 exec_always --no-startup-id ~/.i3rc/scripts/wallpaper_cycle.sh
 exec_always --no-startup-id ~/.i3rc/scripts/launch_eww.sh
 exec --no-startup-id mpDris2
+# Hide the mouse pointer while typing; it reappears on mouse move or click.
+exec_always --no-startup-id ~/.i3rc/scripts/restart_xbanish.sh
 
 # Keyboard: fast repeat + Caps→Ctrl, reapplied when a keyboard is (re)attached.
 exec_always --no-startup-id xset r rate 200 50

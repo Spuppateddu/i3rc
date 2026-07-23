@@ -53,6 +53,7 @@ sudo apt install -y \
     pavucontrol brightnessctl playerctl pulseaudio-utils \
     mpd mpc ncmpcpp mpdris2 \
     dex xss-lock \
+    xbanish \
     papirus-icon-theme
 ```
 
